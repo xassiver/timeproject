@@ -1,5 +1,5 @@
 {
-    "version": "1.0.0",
+    "version": "1.2.0",
     "downloadUrl": "https://github.com/xassiver/timeproject/raw/refs/heads/main/setup.zip",
-    "changelog": "İlk sürüm ve otomatik güncelleme desteği."
+    "changelog": "Zaman formatları düzeltildi (s=saat, sn=saniye, d/dk=dakika) ve sürüm 1.2.0'a yükseltildi."
 }
