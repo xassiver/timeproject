@@ -6,7 +6,7 @@ import { marked } from 'https://esm.sh/marked@5';
  */
 const CONFIG = {
     GITHUB_USER: 'xassiver',
-    REPO_NAME: 'timepoject'
+    REPO_NAME: 'timeproject'
 };
 
 const contentDiv = document.getElementById('content');
