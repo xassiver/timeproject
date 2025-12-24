@@ -1,10 +1,12 @@
+import { marked } from 'https://esm.sh/marked@5';
+
 /**
  * REPOSITORY CONFIGURATION
  * Change these values to point to a different repository.
  */
 const CONFIG = {
     GITHUB_USER: 'xassiver',
-    REPO_NAME: 'timeproject'
+    REPO_NAME: 'timepoject'
 };
 
 const contentDiv = document.getElementById('content');
@@ -12,9 +14,18 @@ const repoLinkElement = document.getElementById('repo-link');
 
 // Update UI text based on configuration
 function initializeUI() {
-    document.title = `${CONFIG.REPO_NAME} / releases - xassiver`;
+    // update page title to include repo name and user
+    document.title = `${CONFIG.REPO_NAME} / releases - ${CONFIG.GITHUB_USER}`;
+    // repo link (points to the repository)
     repoLinkElement.textContent = CONFIG.REPO_NAME;
     repoLinkElement.href = `https://github.com/${CONFIG.GITHUB_USER}/${CONFIG.REPO_NAME}`;
+
+    // brand element reflects the GitHub user and links to their profile
+    const brandEl = document.getElementById('brand');
+    if (brandEl) {
+        brandEl.textContent = CONFIG.GITHUB_USER;
+        brandEl.href = `https://github.com/${CONFIG.GITHUB_USER}`;
+    }
 }
 
 async function fetchReleases() {
@@ -66,8 +77,8 @@ function createReleaseCard(release, isLatest = false) {
             ${isLatest ? '<div class="latest-badge">Son Sürüm</div>' : ''}
             <div class="release-header">
                 <div class="release-title-group">
-                    <div class="release-name">${release.name || release.tag_name}</div>
-                    <span class="release-tag">${release.tag_name}</span>
+                    <div class="release-name">${escapeHtml(release.name || release.tag_name)}</div>
+                    <span class="release-tag">${escapeHtml(release.tag_name)}</span>
                 </div>
                 <div class="release-date">
                     <i class="fa-regular fa-calendar"></i> ${formatDate(release.published_at)}
@@ -108,7 +119,7 @@ function renderReleases(releases) {
                     <div class="dropdown-wrapper">
                         <select id="version-select" class="version-select">
                             <option value="" disabled selected>Bir sürüm seçin...</option>
-                            ${older.map((r, i) => `<option value="${i}">${r.tag_name} - ${formatDate(r.published_at)}</option>`).join('')}
+                            ${older.map((r, i) => `<option value="${i}">${escapeHtml(r.tag_name)} - ${formatDate(r.published_at)}</option>`).join('')}
                         </select>
                     </div>
                 </div>
@@ -136,17 +147,24 @@ function renderReleases(releases) {
 }
 
 /**
- * Basic markdown parsing for the release body
+ * Use marked to parse full Markdown into HTML.
+ * Basic escaping helper to avoid double-inserting unescaped values
  */
 function parseMarkdownBasic(text) {
-    if (!text) return 'Açıklama belirtilmemiş.';
-    
-    return text
-        .replace(/### (.*)/g, '<h3 style="color: var(--text-primary); margin: 1rem 0 0.5rem 0;">$1</h3>')
-        .replace(/## (.*)/g, '<h2 style="color: var(--text-primary); margin: 1.2rem 0 0.6rem 0;">$1</h2>')
-        .replace(/\*\*(.*)\*\*/g, '<strong>$1</strong>')
-        .replace(/^- (.*)/gm, '• $1')
-        .replace(/`(.*?)`/g, '<code>$1</code>');
+    if (!text) return '<p>Açıklama belirtilmemiş.</p>';
+    // marked will produce HTML; allow it directly
+    return marked.parse(text);
+}
+
+// Simple escape to avoid injecting raw values into headings/tags
+function escapeHtml(unsafe) {
+    if (!unsafe) return '';
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
 // Initialize
