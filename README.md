@@ -1,3 +1,7 @@
+[![Platform](https://img.shields.io/badge/Platform-Windows-lightgrey.svg)](https://www.microsoft.com/windows)
+![Downloads](https://img.shields.io/github/downloads/xassiver/timeproject/total)
+![GitHub Repo stars](https://img.shields.io/github/stars/xassiver/timeproject)
+
 # TimeProject
 
 ## Nedir?
